@@ -26,17 +26,16 @@ npm run e2e
 # run all tests
 npm test
 
-找不到命令vue，如何解决
-1.查看node安装目录 例如：~/.nvm/versions/node/v8.3.0/lib/node_modules
+# 找不到命令vue，如何解决
+# 1.查看node安装目录 例如：~/.nvm/versions/node/v8.3.0/lib/node_modules
 npm root -g 
-2.打开并编辑 ~/.profile 文件
-在文件末尾添加 vue-cli 的安装环境
-例如：export PATH="$PATH:$HOME/.nvm/versions/node/v8.3.0/lib/node_modules/vue-cli/bin"
-vim export PATH="$PATH:$HOME/.nvm/versions/node/v8.3.0/lib/node_modules/vue-cli/bin"
-3.加载环境变量
+# 2.打开并编辑 ~/.profile 文件
+# 在文件末尾添加 vue-cli 的安装环境
+# 例如：export PATH="$PATH:$HOME/.nvm/versions/node/v8.3.0/lib/node_modules/vue-cli/bin"
+# 3.加载环境变量
 source ~/.profile
 
-不能使用sass or less css预处理器，如何解决
+# 不能使用sass or less css预处理器，如何解决
 npm install sass-loader node-sass --save-dev
 ```
 

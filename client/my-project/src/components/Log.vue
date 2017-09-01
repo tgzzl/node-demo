@@ -1,7 +1,7 @@
 <template>
   <div class="log-page">
     <div class="left">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form label-width="80px">
         <el-form-item label="地址">
           <el-autocomplete
             popper-class="my-autocomplete"
@@ -22,8 +22,6 @@
 </template>
 
 <script>
-
-  import {Form, FormItem, Autocomplete, Input, Button} from 'element-ui'
   import {fetchSuggestionPlace, transitDirection, postJoke} from '../config/api'
   import Vue from 'vue'
 
@@ -41,7 +39,6 @@
     }
   });
   export default {
-    components: {Form, FormItem, Autocomplete, Input, Button},
     data() {
       return {
         addressArray: [],

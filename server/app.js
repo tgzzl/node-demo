@@ -28,37 +28,53 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-const doRequest = (res, options = {}) => {
-  console.log('doRequest===============', options)
+
+const doRequest = (options, req, res, next) => {
+  options.qs = options.qs || {}
+  if (req.body && req.body.body) {
+    Object.assign(options.qs, JSON.parse(req.body.body))
+  } else {
+    Object.assign(options.qs, req.query)
+  }
+  console.log('=====doRequest===============', options.url, options.qs)
   request(options, (error, resp, body) => {
     if (!error && resp.statusCode == 200) {
       res.json(Object.assign(JSON.parse(body), {return_code: 0, return_info: 'ok'}))
     } else {
-      console.log('doRequest===============', error)
+      console.log('=====doRequest===============', error)
       res.json({return_code: 1000, return_info: 'server error'})
     }
   })
 }
 
+const curry = function (fn) {
+  const args = Array.prototype.slice.call(arguments, 1);
+  return function () {
+    const innerArgs = Array.prototype.slice.call(arguments);
+    const finalArgs = args.concat(innerArgs);
+    return fn.apply(null, finalArgs);
+  };
+}
+
 //模拟 get 请求
-app.use('/place/suggestion', express.Router().get('/', (req, res, next) => doRequest(res, {
+app.use('/place/suggestion', express.Router().get('/', curry(doRequest, {
   method: 'GET',
   url: 'http://api.map.baidu.com/place/v2/suggestion',
-  qs: Object.assign({ak: 'HRGVIZaERPQqrudUwFwzMPRy', output: 'json', region: '全国'}, req.query),
+  qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy', output: 'json', region: '全国'},
 })))
 
 //模拟 post 请求
-app.use('/direction/transit', express.Router().post('/', (req, res, next) => doRequest(res, {
+app.use('/direction/transit', express.Router().post('/', curry(doRequest, {
   method: 'GET',
   url: 'http://api.map.baidu.com/direction/v2/transit',
-  qs: Object.assign(JSON.parse(req.body.body), {ak: 'HRGVIZaERPQqrudUwFwzMPRy'}),
+  qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy'},
 })))
 
 //模拟 post 请求
-app.use('/joke/rand', express.Router().post('/', (req, res, next) => doRequest(res, {
+app.use('/joke/rand', express.Router().post('/', curry(doRequest, {
   method: 'POST',
   url: 'http://v.juhe.cn/joke/randJoke.php',
-  qs: Object.assign(JSON.parse(req.body.body), {key: '0d4818dd0829e4a5ff44ae3e31db9153'}),
+  qs: {key: '0d4818dd0829e4a5ff44ae3e31db9153'},
 })))
 
 // catch 404 and forward to error handler

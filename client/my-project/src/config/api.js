@@ -1,10 +1,7 @@
 import Axios from 'axios'
 import qs from 'qs'
-import {endpoint} from './env'
 
-Axios.defaults.baseURL = `${endpoint}/`;
-Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
+Axios.defaults.baseURL = '/api';
 
 const fetch = (url, params = {}) => {
   return Axios.get(url, {params: params}).then(response => {
@@ -31,7 +28,7 @@ const post = (url, params = {}) => {
 };
 
 
-const fetchSuggestionPlace = params => fetch('place/suggestion', params)
+const fetchSuggestionPlace = params => fetch('/place/suggestion', params)
 const transitDirection = params => post('/direction/transit', params)
 const postJoke = params => post('/joke/rand', params)
 

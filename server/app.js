@@ -57,21 +57,21 @@ const curry = function (fn) {
 }
 
 //模拟 get 请求
-app.use('/place/suggestion', express.Router().get('/', curry(doRequest, {
+app.use('/api/place/suggestion', express.Router().get('/', curry(doRequest, {
   method: 'GET',
   url: 'http://api.map.baidu.com/place/v2/suggestion',
   qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy', output: 'json', region: '全国'},
 })))
 
 //模拟 post 请求
-app.use('/direction/transit', express.Router().post('/', curry(doRequest, {
+app.use('/api/direction/transit', express.Router().post('/', curry(doRequest, {
   method: 'GET',
   url: 'http://api.map.baidu.com/direction/v2/transit',
   qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy'},
 })))
 
 //模拟 post 请求
-app.use('/joke/rand', express.Router().post('/', curry(doRequest, {
+app.use('/api/joke/rand', express.Router().post('/', curry(doRequest, {
   method: 'POST',
   url: 'http://v.juhe.cn/joke/randJoke.php',
   qs: {key: '0d4818dd0829e4a5ff44ae3e31db9153'},

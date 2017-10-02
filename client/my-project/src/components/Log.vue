@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import {fetchSuggestionPlace, transitDirection, postJoke} from '../config/api'
+  import API from '../config/api'
   import Vue from 'vue'
 
   Vue.component('address-item-1', {
@@ -46,17 +46,17 @@
       }
     },
     mounted() {
-      transitDirection({
+      API.transitDirection({
         origin: '40.056878,116.30815',
         destination: '31.222965,121.505821',
         arr: [{a: 1, b: 'b'}, {c: 2, d: 'd'}],
       });
 
-      postJoke({type: 'pic'});
+      API.postJoke({type: 'pic'});
     },
     methods: {
       querySearchAsync(query, cb) {
-        fetchSuggestionPlace({query: query}).then(res => {
+        API.fetchSuggestionPlace({query: query}).then(res => {
           this.addressArray = res.result.map(item => {
             item.value = item.name;
             return item;

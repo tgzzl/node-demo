@@ -56,7 +56,7 @@
     },
     methods: {
       querySearchAsync(query, cb) {
-        API.fetchSuggestionPlace({query: query}).then(res => {
+        API.fetchSuggestionPlace({query}).then(res => {
           this.addressArray = res.result.map(item => {
             item.value = item.name;
             return item;

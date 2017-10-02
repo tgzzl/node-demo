@@ -30,16 +30,8 @@ const post = (url, params = {}) => {
 }
 
 
-const curry = function (fn) {
-  const args = Array.prototype.slice.call(arguments, 1)
-  return function () {
-    args.push(...Array.from(arguments))
-    return fn.apply(null, args)
-  }
-}
-
 export default {
-  fetchSuggestionPlace: curry(fetch, '/place/suggestion'),
-  transitDirection: curry(post, '/direction/transit'),
-  postJoke: curry(post, '/joke/rand')
+  fetchSuggestionPlace: fetch.bind(null, '/place/suggestion'),
+  transitDirection: fetch.bind(null, '/direction/transit'),
+  postJoke: post.bind(null, '/joke/rand')
 }

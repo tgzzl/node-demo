@@ -3,7 +3,7 @@ var path = require('path')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
-var request = require('request')
+var axios = require('axios')
 var app = express()
 
 // 跨域设置
@@ -28,53 +28,38 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-
 const doRequest = (options, req, res, next) => {
-  options.qs = options.qs || {}
+  options.params = options.params || {}
   if (req.body && req.body.body) {
-    Object.assign(options.qs, JSON.parse(req.body.body))
+    options.data = Object.assign(options.params, JSON.parse(req.body.body))
   } else {
-    Object.assign(options.qs, req.query)
+    Object.assign(options.params, req.query)
   }
-  console.log('=====doRequest===============', options.url, options.qs)
-  request(options, (error, resp, body) => {
-    if (!error && resp.statusCode == 200) {
-      res.json(Object.assign(JSON.parse(body), {return_code: 0, return_info: 'ok'}))
-    } else {
-      console.log('=====doRequest===============', error)
-      res.json({return_code: 1000, return_info: 'server error'})
-    }
-  })
+  axios(options)
+    .then(data => res.json(Object.assign(data.data, {return_code: 0, return_info: 'ok'})))
+    .catch(e => res.json({return_code: 1000, return_info: 'server error'}))
 }
 
-const curry = function (fn) {
-  const args = Array.prototype.slice.call(arguments, 1);
-  return function () {
-    const innerArgs = Array.prototype.slice.call(arguments);
-    const finalArgs = args.concat(innerArgs);
-    return fn.apply(null, finalArgs);
-  };
-}
 
 //模拟 get 请求
-app.use('/api/place/suggestion', express.Router().get('/', curry(doRequest, {
-  method: 'GET',
+app.use('/api/place/suggestion', express.Router().get('/', doRequest.bind(null, {
+  method: 'get',
   url: 'http://api.map.baidu.com/place/v2/suggestion',
-  qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy', output: 'json', region: '全国'},
+  params: {ak: 'HRGVIZaERPQqrudUwFwzMPRy', output: 'json', region: '全国'},
 })))
 
 //模拟 post 请求
-app.use('/api/direction/transit', express.Router().post('/', curry(doRequest, {
-  method: 'GET',
+app.use('/api/direction/transit', express.Router().get('/', doRequest.bind(null, {
+  method: 'get',
   url: 'http://api.map.baidu.com/direction/v2/transit',
-  qs: {ak: 'HRGVIZaERPQqrudUwFwzMPRy'},
+  params: {ak: 'HRGVIZaERPQqrudUwFwzMPRy'},
 })))
 
 //模拟 post 请求
-app.use('/api/joke/rand', express.Router().post('/', curry(doRequest, {
-  method: 'POST',
+app.use('/api/joke/rand', express.Router().post('/', doRequest.bind(null, {
+  method: 'post',
   url: 'http://v.juhe.cn/joke/randJoke.php',
-  qs: {key: '0d4818dd0829e4a5ff44ae3e31db9153'},
+  params: {key: '0d4818dd0829e4a5ff44ae3e31db9153'},
 })))
 
 // catch 404 and forward to error handler
